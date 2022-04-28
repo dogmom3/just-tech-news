@@ -46,6 +46,18 @@ User.init(
     },
   },
   {
+      hooks: {
+          //set up beforeCreate lifecycle "hook" functionality
+          async beforeCreate(newUserData) {
+              newUserData.password = await bcrpyt.hash(newUserData.password, 10);
+                  return newUserData
+          },
+          //set up beforeUpdate lifecycle "hook" functionality
+          async beforeUpdate(updatedUserData) {
+              updatedUserData.password = await bcrpyt.hash(updatedUserData.password, 10);
+              return updatedUserData;
+          }
+  },
     //pass in imported sequelize connection
     sequelize,
     //dont automatically create/createdAt/updatedAt timestamp fields
