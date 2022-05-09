@@ -20,17 +20,18 @@ router.get("/:id", (req, res) => {
   User.findOne({
     attributes: {
       exclude: ["password"],
-      //when query user, receive title info for all voted on posts
-      include: [
-        { model: Post, attributes: ["id", "title", "post_url", "created_at"] },
-        {
-          model: Post,
-          attributes: ["title"],
-          through: Vote,
-          as: "voted_posts",
-        },
-      ],
     },
+    //when query user, receive title info for all voted on posts
+    include: [
+      { model: Post, attributes: ["id", "title", "post_url", "created_at"] },
+      {
+        model: Post,
+        attributes: ["title"],
+        through: Vote,
+        as: "voted_posts",
+      },
+    ],
+
     where: {
       id: req.params.id,
     },
