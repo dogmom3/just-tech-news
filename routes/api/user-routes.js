@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { User, Post, Vote } = require("../../models");
+const { User, Post, Vote, Comment } = require("../../models");
 
 // GET /api/users <--all users
 router.get("/", (req, res) => {
@@ -21,9 +21,21 @@ router.get("/:id", (req, res) => {
     attributes: {
       exclude: ["password"],
     },
-    //when query user, receive title info for all voted on posts
+    where: {
+      id: req.params.id,
+    },
+    //include title info for posts
     include: [
       { model: Post, attributes: ["id", "title", "post_url", "created_at"] },
+      //include comments
+      {
+        model: Comment,
+        attributes: ['id', 'comment_text', 'created_at'],
+        include: {
+          model: Post,
+          attributes: ['title']
+        }
+      },
       {
         model: Post,
         attributes: ["title"],
@@ -32,9 +44,7 @@ router.get("/:id", (req, res) => {
       },
     ],
 
-    where: {
-      id: req.params.id,
-    },
+   
   })
     .then((dbUserData) => {
       if (!dbUserData) {
